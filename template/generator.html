@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Content Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style3.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-3">
+        <h1 class="text-center mb-5">Gemini AI</h1>
+        
+        <!-- Content Display Area -->
+        <div class="content-container" id="contentContainer">
+            {% if content %}
+                <div id="initialContent" style="display: none;">{{ content }}</div>
+                <div id="dynamicContent"></div>
+            {% else %}
+                <div class="text-muted text-center">Your generated content will appear here...</div>
+            {% endif %}
+        </div>
+
+        <!-- Search-style Input Form -->
+        <div class="form-container">
+            <div class="search-container">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-2">
+                        {{ form.query }}
+                        <div class="text-center mt-2">
+                            <small class="text-muted">{{ form.query.help_text }}</small>
+                        </div>
+                    </div>
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-primary btn-lg">Generate Content</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Keep previous JavaScript for dynamic content -->
+    <script>
+        function typeContent() {
+            const initialContent = document.getElementById('initialContent');
+            if (!initialContent) return;
+
+            const content = initialContent.textContent.split('\n');
+            const container = document.getElementById('dynamicContent');
+            container.innerHTML = '';
+            
+            content.forEach((line, index) => {
+                setTimeout(() => {
+                    const lineDiv = document.createElement('div');
+                    lineDiv.className = 'content-line';
+                    lineDiv.textContent = line;
+                    container.appendChild(lineDiv);
+                    
+                    // Auto-scroll to bottom
+                    container.scrollTop = container.scrollHeight;
+                }, index * 100);
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', typeContent);
+    </script>
+</body>
+</html>
